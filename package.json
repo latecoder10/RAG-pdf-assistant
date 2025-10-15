@@ -1,0 +1,22 @@
+{
+  "name": "express-react-rag",
+  "private": true,
+  "version": "0.1.0",
+  "workspaces": [
+    "server",
+    "client",
+    "shared"
+  ],
+  "engines": {
+    "node": ">=20.19.0"
+  },
+  "scripts": {
+    "dev": "node -e \"console.log('Tip: run \\\"yarn workspace server dev\\\" and \\\"yarn workspace client dev\\\" in two terminals for best DX')\"",
+    "build": "yarn workspaces foreach -p run build",
+    "clean": "yarn workspaces foreach -p run clean"
+  },
+  "devDependencies": {
+    "concurrently": "^9.0.0",
+    "rimraf": "^6.0.1"
+  }
+}
