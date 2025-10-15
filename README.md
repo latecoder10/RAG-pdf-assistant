@@ -21,12 +21,14 @@ A minimal but production‑minded **Retrieval‑Augmented Generation** app.
 ## Tech Stack
 
 **Frontend**
+
 - React 18
 - Vite 6
 - Tailwind CSS v4 (`@tailwindcss/vite`)
 - `react-markdown`, `remark-gfm`
 
 **Backend**
+
 - Node 20+ / 22
 - Express + TypeScript
 - Multer (file uploads)
@@ -34,7 +36,10 @@ A minimal but production‑minded **Retrieval‑Augmented Generation** app.
 - Pinecone (serverless, cosine metric, 768 dims – match your embedding model)
 - Google Gemini (AI Studio API key)
 
+![App screenshot](client/resources/screencapture-localhost-5173-2025-10-15-10_17_29.png)
+
 **Tooling**
+
 - Yarn classic workspaces (monorepo)
 
 ---
@@ -101,12 +106,14 @@ Windows tip: when docs say `rimraf`, use `rmdir /s /q path` if `rimraf` isn’t 
 
 ## Setup & Quick Start
 
-1) **Install deps**
+1. **Install deps**
+
 ```bash
 yarn install
 ```
 
-2) **Server environment** – create `server/.env` (copy from `.env.example`):
+2. **Server environment** – create `server/.env` (copy from `.env.example`):
+
 ```
 # server/.env
 PORT=4000
@@ -124,7 +131,8 @@ CHUNK_SIZE=1000
 CHUNK_OVERLAP=200
 ```
 
-3) **Run dev servers (two terminals)**
+3. **Run dev servers (two terminals)**
+
 ```bash
 # Terminal A
 yarn workspace @app/server dev
@@ -133,26 +141,32 @@ yarn workspace @app/server dev
 yarn workspace @app/client dev
 ```
 
-4) Open **http://localhost:5173**. Upload a PDF (left sidebar), click **Ingest PDF**, then ask questions.
+4. Open **http://localhost:5173**. Upload a PDF (left sidebar), click **Ingest PDF**, then ask questions.
 
 ---
 
 ## Tailwind v4 Notes
 
-- We use **`@tailwindcss/vite`**. Do **not** keep a `postcss.config.js`.  
-- Ensure `client/src/index.css` is imported in `src/main.tsx`.  
+- We use **`@tailwindcss/vite`**. Do **not** keep a `postcss.config.js`.
+- Ensure `client/src/index.css` is imported in `src/main.tsx`.
 - Valid `tailwind.config.ts` patterns (either is fine):
 
 ```ts
 // Option A – helper (needs v4 typings)
-import { defineConfig } from 'tailwindcss/helpers'
-export default defineConfig({ content: ['./index.html','./src/**/*.{ts,tsx}'], theme: { extend: {} } })
+import { defineConfig } from "tailwindcss/helpers";
+export default defineConfig({
+  content: ["./index.html", "./src/**/*.{ts,tsx}"],
+  theme: { extend: {} },
+});
 ```
 
 ```ts
 // Option B – simplest, works everywhere
-import type { Config } from 'tailwindcss'
-export default { content: ['./index.html','./src/**/*.{ts,tsx}'], theme: { extend: {} } } satisfies Config
+import type { Config } from "tailwindcss";
+export default {
+  content: ["./index.html", "./src/**/*.{ts,tsx}"],
+  theme: { extend: {} },
+} satisfies Config;
 ```
 
 - If Vite complains about `@tailwindcss/postcss`, you still have a `postcss.config.js` → remove it.
@@ -187,34 +201,45 @@ export default { content: ['./index.html','./src/**/*.{ts,tsx}'], theme: { exten
 Base: `http://localhost:4000/api`
 
 ### `POST /ingest/pdf`
+
 Upload and index a PDF for the current session.
 
 - **Headers**: `x-session-id: <uuid>`
 - **Body**: `multipart/form-data` with field **file**
 - **Response**:
+
 ```json
 { "ok": true, "info": { "pages": 12, "chunks": 148 } }
 ```
 
 ### `POST /query`
+
 Ask a question about the current session’s documents.
 
 - **Headers**: `x-session-id: <uuid>`
 - **Body**:
+
 ```json
 { "q": "when is the policy effective?", "topK": 5 }
 ```
+
 - **Response**:
+
 ```json
 {
   "answer": "…",
   "matches": [
-    { "id": "file_chunk_001", "score": 0.79, "metadata": { "docId": "file.pdf", "page": 2 } }
+    {
+      "id": "file_chunk_001",
+      "score": 0.79,
+      "metadata": { "docId": "file.pdf", "page": 2 }
+    }
   ]
 }
 ```
 
 ### `GET /health`
+
 Simple health check → `{ "ok": true }`
 
 ---
@@ -235,6 +260,7 @@ Simple health check → `{ "ok": true }`
 - **Proxy error `ECONNRESET`** from Vite  
   Start the server: `yarn workspace @app/server dev` (PORT=4000).  
   Client proxy in `vite.config.ts` should include:
+
   ```ts
   server: { proxy: { '/api': { target: 'http://localhost:4000', changeOrigin: true } } }
   ```
@@ -244,8 +270,9 @@ Simple health check → `{ "ok": true }`
 
 - **ENOENT for uploads**  
   Ensure `uploads/` exists or create it programmatically:
+
   ```ts
-  fs.mkdirSync(path.join(process.cwd(), 'uploads'), { recursive: true })
+  fs.mkdirSync(path.join(process.cwd(), "uploads"), { recursive: true });
   ```
 
 - **Multer type mismatch**  
@@ -282,6 +309,7 @@ yarn workspace @app/client clean
 ## Standard Folder Guidance (grow the app)
 
 **Client**
+
 ```
 src/
   components/       # Chat, Message, Uploader, UI primitives
@@ -293,6 +321,7 @@ src/
 ```
 
 **Server**
+
 ```
 src/
   config/           # env, pinecone, gemini/langchain init
@@ -341,6 +370,7 @@ Vite, Tailwind CSS, Pinecone, Google AI (Gemini), LangChain.
 ## Support
 
 If you hit an issue, capture:
+
 - **Server logs** (stack)
 - **Client console** error
 - **Exact request** (without secrets)
